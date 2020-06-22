@@ -1,10 +1,32 @@
-import fetch from 'node-fetch'
+import Bot from '@xg4/dingtalk-bot'
+import dotenv from 'dotenv'
+import initDB from './db'
+import LinkModel from './models/link'
+import spider from './spider'
 
-// https://free-ssr.xyz
+dotenv.config()
+
 async function bootstrap() {
-  const result = await fetch('http://www.baidu.com')
+  const db = await initDB()
+  const { v2rayList, ssrList } = await spider(process.env.URL)
 
-  console.log(result)
+  const list = [...v2rayList, ...ssrList]
+
+  const bot = new Bot(process.env.WEBHOOK, process.env.SECRET)
+
+  for (const item of list) {
+    const isExist = await LinkModel.findOne(item)
+    if (!isExist) {
+      const link = new LinkModel(item)
+      await link.save()
+      await bot.markdown({
+        title: `🔗 new link`,
+        text: link.url,
+      })
+    }
+  }
+
+  db.disconnect()
 }
 
 bootstrap()
