@@ -19,8 +19,9 @@ async function bootstrap() {
     if (!isExist) {
       const link = new LinkModel(item)
       await link.save()
+      const type = link.url.split('://')[0]
       await bot.markdown({
-        title: `🔗 new link`,
+        title: `🔗 new ${type} link`,
         text: link.url,
       })
     }
