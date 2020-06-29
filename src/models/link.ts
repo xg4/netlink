@@ -38,6 +38,4 @@ LinkSchema.pre('save', function (this: LinkDocument, next) {
   next()
 })
 
-const LinkModel = model<LinkDocument>('Link', LinkSchema)
-
-export default LinkModel
+export const LinkModel = model<LinkDocument>('Link', LinkSchema)

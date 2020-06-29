@@ -1,18 +1,19 @@
 import Bot from '@xg4/dingtalk-bot'
 import dotenv from 'dotenv'
-import initDB from './db'
-import LinkModel from './models/link'
-import spider from './spider'
+import { SECRET, WEBHOOK, WEB_URL } from './config'
+import { initDB } from './db'
+import { LinkModel } from './models'
+import { spider } from './spider'
 
 dotenv.config()
 
 async function bootstrap() {
   const db = await initDB()
-  const { v2rayList, ssrList } = await spider(process.env.URL)
+  const { v2rayList, ssrList } = await spider(WEB_URL)
 
   const list = [...v2rayList, ...ssrList]
 
-  const bot = new Bot(process.env.WEBHOOK, process.env.SECRET)
+  const bot = new Bot(WEBHOOK, SECRET)
 
   for (const item of list) {
     const isExist = await LinkModel.findOne(item)

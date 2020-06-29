@@ -9,7 +9,7 @@ interface Result {
   update_time: number
 }
 
-export default async function spider(url) {
+export async function spider(url: string) {
   const result = await fetch(url)
   const buf = await result.arrayBuffer()
   const decoder = new TextDecoder()

@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
+import { DB_URI } from './config'
 
-export default function initDB() {
-  return mongoose.connect(process.env.DB_URI, {
+export function initDB() {
+  return mongoose.connect(DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
