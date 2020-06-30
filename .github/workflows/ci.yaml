@@ -6,10 +6,9 @@ on:
     - cron: '*/5 * * * *'
 
 jobs:
-  timeout-minutes: 5
-
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout
