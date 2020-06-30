@@ -27,5 +27,6 @@ jobs:
         env:
           DB_URI: ${{ secrets.DB_URI }}
           SECRET: ${{ secrets.SECRET }}
-          URL: ${{ secrets.URL }}
           WEBHOOK: ${{ secrets.WEBHOOK}}
+          V2RAY_URL: ${{ secrets.V2RAY_URL }}
+          SSR_URL: ${{ secrets.SSR_URL }}
