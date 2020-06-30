@@ -1,15 +1,17 @@
 import Bot from '@xg4/dingtalk-bot'
 import dotenv from 'dotenv'
-import { SECRET, WEBHOOK, WEB_URL } from './config'
+import { SECRET, SSR_URL, V2RAY_URL, WEBHOOK } from './config'
 import { initDB } from './db'
 import { LinkModel } from './models'
-import { spider } from './spider'
+import { fetchData } from './spider'
 
 dotenv.config()
 
 async function bootstrap() {
   const db = await initDB()
-  const { v2rayList, ssrList } = await spider(WEB_URL)
+
+  const v2rayList = await fetchData(SSR_URL)
+  const ssrList = await fetchData(V2RAY_URL)
 
   const list = [...v2rayList, ...ssrList]
 

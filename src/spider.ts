@@ -1,7 +1,6 @@
-import { JSDOM } from 'jsdom'
 import fetch from 'node-fetch'
 
-interface Result {
+interface ResultData {
   id: number
   url: string
   name: string
@@ -9,17 +8,8 @@ interface Result {
   update_time: number
 }
 
-export async function spider(url: string) {
-  const result = await fetch(url)
-  const buf = await result.arrayBuffer()
-  const decoder = new TextDecoder()
-  const body = decoder.decode(buf)
-  const { window } = new JSDOM(body, { runScripts: 'dangerously' })
+export async function fetchData(url: string) {
+  const result = (await fetch(url).then((res) => res.json())) as ResultData[]
 
-  const data: {
-    v2rayList: Result[]
-    ssrList: Result[]
-  } = window.__NUXT__.data[0]
-
-  return data
+  return result
 }
