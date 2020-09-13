@@ -38,7 +38,7 @@
     "@xg4/dingtalk-bot": "^0.0.4",
     "dotenv": "^8.2.0",
     "mongoose": "^5.9.19",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
