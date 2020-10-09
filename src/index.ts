@@ -18,6 +18,7 @@ async function bootstrap() {
   const bot = new Bot(WEBHOOK, SECRET)
 
   for (const item of list) {
+    item.url = item.url.slice(0, 15) + item.url.slice(16)
     const isExist = await LinkModel.findOne(item)
     if (!isExist) {
       const link = new LinkModel(item)
