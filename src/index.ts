@@ -10,8 +10,10 @@ dotenv.config()
 async function bootstrap() {
   const db = await initDB()
 
-  const v2rayList = await fetchData(SSR_URL)
-  const ssrList = await fetchData(V2RAY_URL)
+  const [ssrList, v2rayList] = await Promise.all([
+    fetchData(SSR_URL),
+    fetchData(V2RAY_URL),
+  ])
 
   const list = [...v2rayList, ...ssrList]
 
@@ -25,7 +27,7 @@ async function bootstrap() {
       await link.save()
       const type = link.url.split('://')[0]
       await bot.markdown({
-        title: `🔗 new ${type} link`,
+        title: `🔗 ${type} ${item.name}`,
         text: link.url,
       })
     }
