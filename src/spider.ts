@@ -9,7 +9,7 @@ interface ResultData {
 }
 
 export async function fetchData(url: string) {
-  const result = (await fetch(url).then((res) => res.json())) as ResultData[]
+  const result: ResultData[] = await fetch(url).then((res) => res.json())
 
   return result
 }
