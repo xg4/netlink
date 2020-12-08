@@ -1,4 +1,5 @@
 import Bot from '@xg4/dingtalk-bot'
+import retry from 'async-retry'
 import dotenv from 'dotenv'
 import { SECRET, SSR_URL, V2RAY_URL, WEBHOOK } from './config'
 import { initDB } from './db'
@@ -7,7 +8,7 @@ import { fetchData } from './spider'
 
 dotenv.config()
 
-async function bootstrap() {
+async function task() {
   const db = await initDB()
 
   const [ssrList, v2rayList] = await Promise.all([
@@ -36,4 +37,7 @@ async function bootstrap() {
   db.disconnect()
 }
 
-bootstrap()
+retry(task, { retries: 3 }).catch((err) => {
+  console.error(err)
+  process.exit(-1)
+})
