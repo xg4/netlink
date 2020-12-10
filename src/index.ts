@@ -1,43 +1,38 @@
 import Bot from '@xg4/dingtalk-bot'
 import retry from 'async-retry'
 import dotenv from 'dotenv'
+import { join } from 'path'
 import { SECRET, SSR_URL, V2RAY_URL, WEBHOOK } from './config'
-import { initDB } from './db'
-import { LinkModel } from './models'
 import { fetchData } from './spider'
+import { diffFile } from './util'
 
 dotenv.config()
 
-async function task() {
-  const db = await initDB()
+const bot = new Bot(WEBHOOK, SECRET)
 
-  const [ssrList, v2rayList] = await Promise.all([
+async function task() {
+  const [ssrList, vmessList] = await Promise.all([
     fetchData(SSR_URL),
     fetchData(V2RAY_URL),
   ])
 
-  const list = [...v2rayList, ...ssrList]
+  const vmessFullPath = join(__dirname, '../archives/vmess.txt')
+  const ssrFullPath = join(__dirname, '../archives/ssr.txt')
 
-  const bot = new Bot(WEBHOOK, SECRET)
+  const [ssrDiff, vmessDiff] = await Promise.all([
+    diffFile(ssrFullPath, ssrList),
+    diffFile(vmessFullPath, vmessList),
+  ])
 
-  for (const item of list) {
-    item.url = item.url.slice(0, 15) + item.url.slice(16)
-    const isExist = await LinkModel.findOne(item)
-    if (!isExist) {
-      const link = new LinkModel(item)
-      await link.save()
-      const type = link.url.split('://')[0]
-      await bot.markdown({
+  await Promise.all(
+    [...ssrDiff, ...vmessDiff].map((item) => {
+      const type = item.url.split('://')[0]
+      return bot.markdown({
         title: `🔗 ${type} ${item.name}`,
-        text: link.url,
+        text: item.url,
       })
-    }
-  }
-
-  db.disconnect()
+    })
+  )
 }
 
-retry(task, { retries: 3 }).catch((err) => {
-  console.error(err)
-  process.exit(-1)
-})
+retry(task, { retries: 3 })

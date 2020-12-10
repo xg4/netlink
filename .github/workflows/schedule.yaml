@@ -1,14 +1,12 @@
-name: v2ray_push
+name: schedule
 
 on:
-  push:
   schedule:
     - cron: '*/5 * * * *'
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     steps:
       - name: Checkout
@@ -22,7 +20,7 @@ jobs:
       - name: Install
         run: yarn
 
-      - name: Push
+      - name: Fetch
         run: npm run start
         env:
           DB_URI: ${{ secrets.DB_URI }}
@@ -30,3 +28,6 @@ jobs:
           WEBHOOK: ${{ secrets.WEBHOOK}}
           V2RAY_URL: ${{ secrets.V2RAY_URL }}
           SSR_URL: ${{ secrets.SSR_URL }}
+
+      - name: Push commit
+        run: chmod +x ./git-diff.sh && ./git-diff.sh
