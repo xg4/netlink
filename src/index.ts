@@ -26,7 +26,9 @@ async function task() {
 
   await Promise.all(
     [...ssrDiff, ...vmessDiff].map((item) => {
-      const type = item.url.split('://')[0]
+      const url = item.url
+      const type = url.split('://')[0]
+      item.url = url.slice(0, 15) + url.slice(16)
       return bot.markdown({
         title: `🔗 ${type} ${item.name}`,
         text: item.url,
