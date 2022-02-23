@@ -14,10 +14,9 @@ export default async function handler(
     fromPairs,
     pick(['User-Agent', 'Referer'])
   )(rawHeaders);
+  console.log(process.env.REQUEST_URL);
 
-  const result = await fetch(process.env.REQUEST_URL!, {
-    headers,
-  });
+  const result = await fetch(process.env.REQUEST_URL!);
 
   if (result.ok) {
     const data: RemoteData[] = await result.json();
