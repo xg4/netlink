@@ -32,7 +32,9 @@ export default async function handler(
     );
     res.setHeader('Content-Type', 'text/plain;charset=utf-8');
     res.status(200).send(configText);
-  } catch (err: any) {
-    res.status(500).json(err.message);
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).send('Internal Server Error');
   }
 }
