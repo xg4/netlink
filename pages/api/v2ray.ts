@@ -9,7 +9,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { rawHeaders } = req;
-  const headers = pipe(chunk(2), fromPairs, pick('User-Agent'))(rawHeaders);
+  const headers = pipe(
+    chunk(2),
+    fromPairs,
+    pick(['User-Agent', 'Referer'])
+  )(rawHeaders);
 
   const result = await fetch(process.env.REQUEST_URL!, {
     headers,
