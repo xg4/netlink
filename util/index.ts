@@ -17,6 +17,7 @@ export async function generateConfig(target: string, url: string) {
     target,
     url,
     insert: false,
+    emoji: true,
     config:
       process.env.ACL4SSR_CONFIG_URL ??
       'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini',
