@@ -1,6 +1,6 @@
 import { chunk, fromPairs, pick, pipe } from 'lodash/fp';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getRemoteUrls } from '../../util';
+import { generateConfig, getRemoteUrls } from '../../util';
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,7 +15,8 @@ export default async function handler(
 
   try {
     const urls = await getRemoteUrls();
-    res.status(200).end(urls.join('\n'));
+    const configText = await generateConfig('v2ray', urls.join('|'));
+    res.status(200).end(configText);
   } catch (err: any) {
     res.status(500).json(err.message);
   }
