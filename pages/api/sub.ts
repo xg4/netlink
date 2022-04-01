@@ -21,15 +21,21 @@ export default async function handler(
   const target = filterSubscriptionType(type);
 
   try {
+    console.log('start');
+
     const urls = await retry(getRemoteUrls, {
-      retries: 3,
+      retries: 1,
     });
+    console.log('urls');
+
     const configText = await retry(
       () => generateConfig(target, urls.join('|')),
       {
-        retries: 3,
+        retries: 1,
       }
     );
+    console.log('configText');
+
     res.setHeader('Content-Type', 'text/plain;charset=utf-8');
     res.status(200).send(configText);
   } catch (err) {
