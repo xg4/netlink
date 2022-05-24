@@ -1,38 +1,57 @@
-interface RemoteData {
-  url: string
+import isString from 'lodash/isString'
+
+const clientTypes = {
+  Clash: 'clash',
+  Surge3: 'surge&ver=3',
+  Surge4: 'surge&ver=4',
+  Quantumult: 'quan',
+  QuantumultX: 'quanx',
+  Surfboard: 'surfboard',
+  Loon: 'loon',
+  SSAndroid: 'sssub',
+  V2Ray: 'v2ray',
+  ss: 'ss',
+  ssr: 'ssr',
+  ssd: 'ssd',
+  ClashR: 'clashr',
+  Surge2: 'surge&ver=2',
 }
 
-export async function getRemoteUrls() {
-  const result = await fetch(process.env.REQUEST_URL!)
-  if (!result.ok) {
-    throw new Error(result.statusText)
+export function getClientType(type: any) {
+  if (!isString(type)) {
+    return 'clash'
   }
-  const data: RemoteData[] = await result.json()
-  const urls = data.map((i) => i.url.slice(0, 15) + i.url.slice(16))
-  return urls
+  const types = Object.values(clientTypes)
+  if (!types.includes(type)) {
+    return 'clash'
+  }
+  return type
 }
 
-export async function generateConfig(target: string, url: string) {
-  const config = {
-    target,
-    url,
-    insert: false,
-    emoji: true,
-    config:
-      process.env.ACL4SSR_CONFIG_URL ??
-      'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini',
+export function buildURL(
+  url: string,
+  params?: URLSearchParams,
+  paramsSerializer?: (params: URLSearchParams) => string
+) {
+  if (!params) {
+    return url
   }
 
-  const _url = new URL(process.env.ACL4SSR_URL!)
-  for (const [key, value] of Object.entries(config)) {
-    _url.searchParams.set(key, String(value))
+  let serializedParams
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params)
+  } else {
+    serializedParams = params.toString()
   }
 
-  const result = await fetch(_url.toString())
+  if (serializedParams) {
+    const hashMarkIndex = url.indexOf('#')
+    if (hashMarkIndex !== -1) {
+      url = url.slice(0, hashMarkIndex)
+    }
 
-  if (!result.ok) {
-    throw new Error(result.statusText)
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams
   }
 
-  return result.text()
+  return url
 }
