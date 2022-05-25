@@ -1,3 +1,4 @@
+import { defaults } from 'lodash'
 import { buildURL } from '../util'
 
 interface RemoteData {
@@ -14,15 +15,14 @@ export async function getRemoteUrls() {
   return urls
 }
 
-export async function generateConfig(target: string, url: string[]) {
-  const config: any = {
+export async function generateConfig(query: any) {
+  const config: any = defaults(query, {
     insert: false,
     emoji: true,
     new_name: true,
     config: process.env.ACL4SSR_CONFIG_URL,
-    target,
-    url: url.join('|'),
-  }
+    target: 'clash',
+  })
 
   const configUrl = buildURL(
     process.env.ACL4SSR_URL!,

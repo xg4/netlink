@@ -15,9 +15,12 @@ export default async function handler(
       retries: 1,
     })
 
-    const configText = await retry(() => generateConfig(_type, urls), {
-      retries: 1,
-    })
+    const configText = await retry(
+      () => generateConfig({ target: _type, url: urls.join('|') }),
+      {
+        retries: 1,
+      }
+    )
 
     res.setHeader('Content-Type', 'text/plain;charset=utf-8')
     res.status(200).send(configText)
