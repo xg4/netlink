@@ -25,7 +25,7 @@ export async function generateConfig(query: any) {
   })
 
   const configUrl = buildURL(
-    process.env.ACL4SSR_URL!,
+    query.server ?? process.env.ACL4SSR_URL!,
     new URLSearchParams(config)
   )
 
