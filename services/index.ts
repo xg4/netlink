@@ -1,4 +1,4 @@
-import { defaults } from 'lodash'
+import { defaults, isNil, omitBy } from 'lodash'
 import { buildURL } from '../util'
 
 interface RemoteData {
@@ -16,13 +16,18 @@ export async function getRemoteUrls() {
 }
 
 export async function generateConfig(query: any) {
-  const config: any = defaults(query, {
-    insert: false,
-    emoji: true,
-    new_name: true,
-    config: process.env.ACL4SSR_CONFIG_URL,
-    target: 'clash',
-  })
+  const config: any = omitBy(
+    defaults(query, {
+      insert: false,
+      emoji: true,
+      new_name: true,
+      config: process.env.ACL4SSR_CONFIG_URL,
+      target: 'clash',
+    }),
+    isNil
+  )
+
+  console.log(config)
 
   const configUrl = buildURL(
     query.server ?? process.env.ACL4SSR_URL!,
