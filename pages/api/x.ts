@@ -1,5 +1,4 @@
-import retry from 'async-retry'
-import { compact } from 'lodash'
+import { compact, compose, isString, join, uniq } from 'lodash/fp'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { generateConfig, getRemoteUrls } from '../../services'
 
@@ -8,14 +7,16 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const urls = await retry(getRemoteUrls, {
-      retries: 1,
-    })
+    const urls = await getRemoteUrls()
 
-    req.query.url = compact([...urls, req.query.url]).join('|')
+    const { url } = req.query
+    if (isString(url)) {
+      urls.push(...url.split('|'))
+    }
 
-    const configText = await retry(() => generateConfig(req.query), {
-      retries: 1,
+    const configText = await generateConfig({
+      ...req.query,
+      url: compose(join('|'), uniq, compact)(urls),
     })
 
     res.setHeader('Content-Type', 'text/plain;charset=utf-8')
