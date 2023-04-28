@@ -1,5 +1,5 @@
+import buildURL from '@/utils/buildURL'
 import { defaults, isNil, omitBy } from 'lodash'
-import { buildURL } from '../util'
 
 interface RemoteData {
   url: string
@@ -16,7 +16,7 @@ export async function getRemoteUrls() {
 }
 
 export async function generateConfig(query: any) {
-  const config: any = omitBy(
+  const config = omitBy(
     defaults(query, {
       insert: false,
       emoji: true,
@@ -29,10 +29,7 @@ export async function generateConfig(query: any) {
 
   console.log(config)
 
-  const configUrl = buildURL(
-    query.server ?? process.env.ACL4SSR_URL!,
-    new URLSearchParams(config)
-  )
+  const configUrl = buildURL(query.server ?? process.env.ACL4SSR_URL!, config)
 
   const result = await fetch(configUrl)
 

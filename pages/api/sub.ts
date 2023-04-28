@@ -1,20 +1,22 @@
+import { compact, compose, isString, join, uniq } from 'lodash/fp'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { generateConfig, getRemoteUrls } from '../../services'
-import { getClientType } from '../../util'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { type } = req.query
-  const _type = getClientType(type)
-
   try {
     const urls = await getRemoteUrls()
 
+    const { url } = req.query
+    if (isString(url)) {
+      urls.push(...url.split('|'))
+    }
+
     const configText = await generateConfig({
-      target: _type,
-      url: urls.join('|'),
+      ...req.query,
+      url: compose(join('|'), uniq, compact)(urls),
     })
 
     res.setHeader('Content-Type', 'text/plain;charset=utf-8')
