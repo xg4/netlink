@@ -3,16 +3,8 @@ import { compact, defaults, flatten, isNil, omitBy } from 'lodash'
 import * as tasks from './urls'
 
 export async function getRemoteUrls() {
-  return Promise.allSettled(Object.values(tasks).map((task) => task()))
-    .then((results) => {
-      console.log('urls', results)
-      return results
-    })
-    .then((results) =>
-      results.map((result) =>
-        result.status === 'fulfilled' ? result.value : null
-      )
-    )
+  return Promise.allSettled(Object.values(tasks).map((f) => f()))
+    .then((sr) => sr.map((r) => (r.status === 'fulfilled' ? r.value : null)))
     .then(compact)
     .then(flatten)
 }
