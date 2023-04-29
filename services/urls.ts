@@ -2,7 +2,11 @@ export async function getRemote2() {
   if (!process.env.REQUEST2_URL) {
     return []
   }
-  const result = await fetch(process.env.REQUEST2_URL!)
+  const result = await fetch(process.env.REQUEST2_URL, {
+    signal: AbortSignal.timeout(
+      parseInt(process.env.REQUEST_TIMEOUT!) ?? 5 * 1e3
+    ),
+  })
   if (!result.ok) {
     return []
   }
@@ -19,7 +23,11 @@ export async function getRemote() {
   if (!process.env.REQUEST_URL) {
     return []
   }
-  const result = await fetch(process.env.REQUEST_URL)
+  const result = await fetch(process.env.REQUEST_URL, {
+    signal: AbortSignal.timeout(
+      parseInt(process.env.REQUEST_TIMEOUT!) ?? 5 * 1e3
+    ),
+  })
   if (!result.ok) {
     return []
   }

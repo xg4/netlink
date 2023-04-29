@@ -1,10 +1,20 @@
 import buildURL from '@/utils/buildURL'
-import { defaults, isNil, omitBy } from 'lodash'
+import { compact, defaults, flatten, isNil, omitBy } from 'lodash'
 import * as tasks from './urls'
 
 export async function getRemoteUrls() {
-  const result = await Promise.all(Object.values(tasks).map((task) => task()))
-  return result.flat()
+  return Promise.allSettled(Object.values(tasks).map((task) => task()))
+    .then((results) => {
+      console.log('urls', results)
+      return results
+    })
+    .then((results) =>
+      results.map((result) =>
+        result.status === 'fulfilled' ? result.value : null
+      )
+    )
+    .then(compact)
+    .then(flatten)
 }
 
 export async function generateConfig(query: any) {
