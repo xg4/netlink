@@ -1,18 +1,10 @@
 import buildURL from '@/utils/buildURL'
 import { defaults, isNil, omitBy } from 'lodash'
-
-interface RemoteData {
-  url: string
-}
+import * as tasks from './urls'
 
 export async function getRemoteUrls() {
-  const result = await fetch(process.env.REQUEST_URL!)
-  if (!result.ok) {
-    throw new Error(result.statusText)
-  }
-  const data: RemoteData[] = await result.json()
-  const urls = data.map((i) => i.url.slice(0, 15) + i.url.slice(16))
-  return urls
+  const result = await Promise.all(Object.values(tasks).map((task) => task()))
+  return result.flat()
 }
 
 export async function generateConfig(query: any) {
