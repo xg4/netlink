@@ -1,3 +1,4 @@
+import { toNumber } from 'lodash'
 import { compact, compose, isString, join, uniq } from 'lodash/fp'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { generateConfig, getRemoteUrls } from '../../services'
@@ -7,7 +8,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const urls = await getRemoteUrls()
+    const page = toNumber(req.query.page) || 1
+    const pageSize = toNumber(req.query.pageSize) || 20
+    const _urls = await getRemoteUrls()
+    const urls = _urls.slice((page - 1) * pageSize, page * pageSize)
 
     const { url } = req.query
     if (isString(url)) {

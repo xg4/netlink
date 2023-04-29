@@ -1,5 +1,5 @@
 import buildURL from '@/utils/buildURL'
-import { compact, defaults, flatten, isNil, omitBy } from 'lodash'
+import { compact, defaults, flatten, isNil, omitBy, uniq } from 'lodash'
 import * as tasks from './urls'
 
 export async function getRemoteUrls() {
@@ -7,6 +7,7 @@ export async function getRemoteUrls() {
     .then((sr) => sr.map((r) => (r.status === 'fulfilled' ? r.value : null)))
     .then(compact)
     .then(flatten)
+    .then(uniq)
 }
 
 export async function generateConfig(query: any) {
