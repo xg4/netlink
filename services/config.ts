@@ -1,7 +1,7 @@
 import formatUrl from '@/utils/formatUrl'
 import { defaults, isNil, omitBy } from 'lodash'
 
-export default async function generateConfigUrl(query: any) {
+export default async function generateConfig(query: any) {
   const config = omitBy(
     defaults(query, {
       insert: false,
@@ -13,5 +13,9 @@ export default async function generateConfigUrl(query: any) {
     isNil,
   )
 
-  return formatUrl(query.server ?? process.env.ACL4SSR_URL!, config)
+  console.log(config)
+
+  const configUrl = formatUrl(query.server ?? process.env.ACL4SSR_URL!, config)
+
+  return fetch(configUrl).then(r => r.text())
 }

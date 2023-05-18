@@ -15,19 +15,21 @@ export async function GET(request: Request) {
       urls.unshift(...url.split('|'))
     }
 
-    const targetUrl = await generateConfig({
+    const configText = await generateConfig({
       ...query,
       url: compose(join('|'), uniq, compact)(urls),
     })
 
-    return NextResponse.redirect(targetUrl, {
-      status: 302,
+    return new NextResponse(configText, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
     })
   } catch (err) {
     console.log(err)
-
-    return NextResponse.json('Internal Server Error', {
-      status: 500,
-    })
   }
+  return NextResponse.json('Internal Server Error', {
+    status: 500,
+  })
 }
