@@ -8,7 +8,9 @@ export async function GET(request: Request) {
 
     const query = Object.fromEntries(currentUrl.searchParams.entries())
 
-    const urls = [currentUrl.toString().replace('/api/sub', '/api/free')]
+    const urls = [currentUrl.toString().replace('/api/sub', '/api/free')].concat(
+      process.env.CLASH_URLS ? process.env.CLASH_URLS.split(',') : [],
+    )
 
     const url = query.url
     if (isString(url)) {
