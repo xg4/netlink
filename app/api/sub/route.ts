@@ -1,34 +1,27 @@
 import generateConfig from '@/services/config'
-import getRemoteUrls from '@/services/urls'
 import { compact, compose, isString, join, uniq } from 'lodash/fp'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url)
+    const currentUrl = new URL(request.url)
 
-    const query = Object.fromEntries(searchParams.entries())
+    const query = Object.fromEntries(currentUrl.searchParams.entries())
 
-    const page = +query.page || 1
-    const pageSize = +query.pageSize || 20
-    const remoteUrls = await getRemoteUrls()
-    const urls = remoteUrls.slice((page - 1) * pageSize, page * pageSize)
+    const urls = [currentUrl.toString().replace('/api/sub', '/api/free')]
 
     const url = query.url
     if (isString(url)) {
-      urls.push(...url.split('|'))
+      urls.unshift(...url.split('|'))
     }
 
-    const configText = await generateConfig({
+    const targetUrl = await generateConfig({
       ...query,
       url: compose(join('|'), uniq, compact)(urls),
     })
 
-    return new NextResponse(configText, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8',
-      },
+    return NextResponse.redirect(targetUrl, {
+      status: 302,
     })
   } catch (err) {
     console.log(err)

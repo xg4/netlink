@@ -7,4 +7,5 @@ export default async function getRemoteUrls() {
     .then(compact)
     .then(flatten)
     .then(uniq)
+    .then(compact)
 }

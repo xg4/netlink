@@ -1,11 +1,14 @@
+import { b64Decode } from '@/utils/base64'
 import { compact, flatten } from 'lodash'
+import { split } from 'lodash/fp'
 
 async function getResponseText(url: string) {
   return fetch(url, {
     signal: AbortSignal.timeout(parseInt(process.env.REQUEST_TIMEOUT ?? '5000')),
   })
     .then(r => r.text())
-    .then(s => Buffer.from(s, 'base64').toString().split('\n'))
+    .then(b64Decode)
+    .then(split('\n'))
 }
 
 export async function getPlainTextUrls() {
