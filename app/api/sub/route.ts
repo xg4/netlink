@@ -7,10 +7,10 @@ export async function GET(request: Request) {
     const currentUrl = new URL(request.url)
 
     const query = Object.fromEntries(currentUrl.searchParams.entries())
-
-    const urls = [currentUrl.toString().replace('/api/sub', '/api/free')].concat(
-      process.env.CLASH_URLS ? process.env.CLASH_URLS.split(',') : [],
-    )
+    const urls = [
+      currentUrl.toString().replace('/api/sub', '/api/free'),
+      currentUrl.toString().replace('/api/sub', '/api/clash'),
+    ]
 
     const url = query.url
     if (isString(url)) {
