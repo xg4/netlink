@@ -1,8 +1,10 @@
 import { compact, flatten, uniq } from 'lodash'
-import * as tasks from './tasks'
+import { getCustomUrls, getPlainTextUrls } from './tasks'
 
 export default async function getRemoteUrls() {
-  return Promise.allSettled(Object.values(tasks).map(f => f()))
+  const urls = process.env.PLAIN_TEXT_URLS ? process.env.PLAIN_TEXT_URLS.split(',') : []
+  const customUrl = process.env.REQUEST_URL
+  return Promise.allSettled([customUrl && getCustomUrls(customUrl), getPlainTextUrls(urls)])
     .then(r => r.map(r => (r.status === 'fulfilled' ? r.value : null)))
     .then(compact)
     .then(flatten)
