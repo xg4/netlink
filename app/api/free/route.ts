@@ -2,6 +2,8 @@ import getRemoteUrls from '@/services/urls'
 import { b64Encode } from '@/utils/base64'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const remoteUrls = await getRemoteUrls()
 

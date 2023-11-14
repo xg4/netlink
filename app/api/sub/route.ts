@@ -2,6 +2,8 @@ import generateConfig from '@/services/config'
 import { compact, compose, isString, join, uniq } from 'lodash/fp'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
   try {
     const currentUrl = new URL(request.url)

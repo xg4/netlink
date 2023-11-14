@@ -2,6 +2,8 @@ import generateConfig from '@/services/config'
 import { join, uniq } from 'lodash/fp'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 async function sniff(url: string) {
   return fetch(url, { method: 'GET' })
     .then(r => r.text())
